@@ -5,8 +5,7 @@
  * Why: Marketplace, resource, and community links match the original
  *      information architecture without the old Bootstrap grid.
  * How: The columns are static. Only the email form is interactive,
- *      and it is isolated in `NewsletterForm`. Links point at home until
- *      the explore route exists.
+ *      and it is isolated in `NewsletterForm`. Column links open Explore.
  */
 
 import Link from "next/link"
@@ -37,7 +36,7 @@ export function SiteFooter() {
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
               {column.links.map((label) => (
                 <li key={label}>
-                  <Link href="/" className="hover:text-foreground">
+                  <Link href="/explore" className="hover:text-foreground">
                     {label}
                   </Link>
                 </li>

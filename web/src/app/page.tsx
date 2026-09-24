@@ -2,16 +2,16 @@
  * Home page.
  *
  * What: The marketplace landing route at `/`.
- * Why: Hot Collections is the first visual section. Seller and item
- *      titles stay as a plain readout until their own branches.
- * How: The page itself is synchronous. The carousel fetch sits in Suspense,
- *      so the seller and item lists can paint while collections are loading.
- *      A failed collections request renders an empty carousel instead of
- *      crashing the rest of the page.
+ * Why: Collections and new listings are the two visual sections so far.
+ *      Seller names stay a plain list until the ranking branch.
+ * How: The page itself is synchronous. Each async child fetches inside
+ *      Suspense, so one slow request does not blank the other section.
+ *      A failed request renders an empty section instead of crashing the page.
  */
 
 import { Suspense } from "react"
 import { HotCollections } from "@/components/home/hot-collections"
+import { NewItems } from "@/components/home/new-items"
 import { SectionSkeleton } from "@/components/layout/section-skeleton"
 import { getExploreItems, getHotCollections, getTopSellers } from "@/lib/api"
 import { formatEth } from "@/lib/format"
@@ -25,28 +25,20 @@ async function HotCollectionsSection() {
   }
 }
 
-async function CatalogReadout() {
-  let sellers: Awaited<ReturnType<typeof getTopSellers>> = []
-  let items: Awaited<ReturnType<typeof getExploreItems>> = []
-  let errorMessage: string | null = null
-
+async function NewItemsSection() {
   try {
-    ;[sellers, items] = await Promise.all([getTopSellers(), getExploreItems()])
-  } catch (error) {
-    errorMessage = error instanceof Error ? error.message : "The NFT API could not be reached."
+    const items = await getExploreItems()
+    return <NewItems items={items.slice(0, 8)} />
+  } catch {
+    return <NewItems items={[]} />
   }
+}
 
-  if (errorMessage) {
+async function SellersReadout() {
+  try {
+    const sellers = await getTopSellers()
     return (
-      <div className="page-wrap pb-16">
-        <p className="text-destructive">{errorMessage}</p>
-      </div>
-    )
-  }
-
-  return (
-    <div className="page-wrap grid gap-8 pb-16 md:grid-cols-2">
-      <section>
+      <section className="page-wrap pb-16">
         <h2 className="font-heading text-lg">Top sellers ({sellers.length})</h2>
         <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
           {sellers.map((seller) => (
@@ -56,18 +48,15 @@ async function CatalogReadout() {
           ))}
         </ul>
       </section>
-      <section>
-        <h2 className="font-heading text-lg">Explore items ({items.length})</h2>
-        <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-          {items.map((item) => (
-            <li key={item.id}>
-              {item.title} · {formatEth(item.price)}
-            </li>
-          ))}
-        </ul>
-      </section>
-    </div>
-  )
+    )
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "The NFT API could not be reached."
+    return (
+      <div className="page-wrap pb-16">
+        <p className="text-destructive">{message}</p>
+      </div>
+    )
+  }
 }
 
 export default function HomePage() {
@@ -76,8 +65,11 @@ export default function HomePage() {
       <Suspense fallback={<SectionSkeleton title="Hot Collections" />}>
         <HotCollectionsSection />
       </Suspense>
+      <Suspense fallback={<SectionSkeleton title="New Items" count={8} />}>
+        <NewItemsSection />
+      </Suspense>
       <Suspense fallback={null}>
-        <CatalogReadout />
+        <SellersReadout />
       </Suspense>
     </>
   )

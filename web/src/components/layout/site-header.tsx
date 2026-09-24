@@ -4,16 +4,19 @@
  * SiteHeader
  *
  * What: Sticky navigation shared by every page.
- * Why: The brand and wallet prompt should stay available without
- *      repeating markup in each route.
- * How: This commit only has the home route, so the bar is the brand link
- *      plus the wallet dialog. Search and Explore are added with the catalog.
+ * Why: Search, Explore, and the wallet prompt should stay available
+ *      without repeating markup in each route.
+ * How: The search form submits with GET to `/explore?q=`, so the explore
+ *      page can read the query on the server. The wallet dialog is local UI
+ *      state because this demo has no wallet provider. The box starts empty;
+ *      the explore page reads `q` from the URL after the form submits.
  */
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, Wallet } from "lucide-react"
+import { Menu, Search, Wallet } from "lucide-react"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Dialog,
   DialogContent,
@@ -24,7 +27,10 @@ import {
 } from "@/components/ui/dialog"
 import { cn } from "cn"
 
-const links = [{ href: "/", label: "Home" }]
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/explore", label: "Explore" },
+]
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -35,6 +41,16 @@ export function SiteHeader() {
         <Link href="/" className="font-heading text-lg font-semibold tracking-[0.18em]">
           ULTRAVERSE
         </Link>
+
+        <form action="/explore" className="relative mx-auto hidden w-full max-w-md md:block">
+          <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            name="q"
+            placeholder="Search items"
+            aria-label="Search items"
+            className="h-9 pl-8"
+          />
+        </form>
 
         <nav className="ml-auto hidden items-center gap-1 md:flex">
           {links.map((link) => (
