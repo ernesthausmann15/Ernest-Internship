@@ -10,7 +10,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000. The home page has the carousel, new items, and seller ranking. `/explore` sorts and searches. `/author/[authorId]` is a creator profile.
+Open http://localhost:3000. The home page has the carousel, new items, and seller ranking. `/explore` sorts and searches. `/author/[authorId]` is a creator profile. `/item/[nftId]` is one piece.
 
 ## Branches
 
@@ -19,5 +19,6 @@ Open http://localhost:3000. The home page has the carousel, new items, and selle
 - `feature/new-items-and-explore` — New Items grid and Explore catalog
 - `feature/top-sellers` — ranked seller list
 - `feature/author-profile` — dynamic creator page
+- `feature/item-details` — piece page with price, owner, and creator
 
 Pull request notes are in `docs/prs/`.
