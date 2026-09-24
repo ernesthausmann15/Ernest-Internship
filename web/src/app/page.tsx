@@ -7,7 +7,8 @@
  * How: The page itself is synchronous. The hero is static CSS so it paints
  *      immediately. Each async child fetches inside Suspense, so one slow
  *      request does not blank the other section. A failed request renders
- *      an empty section instead of crashing the page.
+ *      an empty section instead of crashing the page. `dynamic` keeps the
+ *      lists live on Vercel instead of freezing them at build time.
  */
 
 import { Suspense } from "react"
@@ -17,6 +18,8 @@ import { NewItems } from "@/components/home/new-items"
 import { TopSellers } from "@/components/home/top-sellers"
 import { SectionSkeleton } from "@/components/layout/section-skeleton"
 import { getExploreItems, getHotCollections, getTopSellers } from "@/lib/api"
+
+export const dynamic = "force-dynamic"
 
 async function HotCollectionsSection() {
   try {
