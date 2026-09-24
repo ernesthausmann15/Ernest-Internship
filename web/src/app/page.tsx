@@ -2,8 +2,8 @@
  * Home page.
  *
  * What: The marketplace landing route at `/`.
- * Why: Collections and new listings are the two visual sections so far.
- *      Seller names stay a plain list until the ranking branch.
+ * Why: Collections, new listings, and the seller ranking are separate
+ *      requests. Each one should be able to finish on its own.
  * How: The page itself is synchronous. Each async child fetches inside
  *      Suspense, so one slow request does not blank the other section.
  *      A failed request renders an empty section instead of crashing the page.
@@ -12,9 +12,9 @@
 import { Suspense } from "react"
 import { HotCollections } from "@/components/home/hot-collections"
 import { NewItems } from "@/components/home/new-items"
+import { TopSellers } from "@/components/home/top-sellers"
 import { SectionSkeleton } from "@/components/layout/section-skeleton"
 import { getExploreItems, getHotCollections, getTopSellers } from "@/lib/api"
-import { formatEth } from "@/lib/format"
 
 async function HotCollectionsSection() {
   try {
@@ -34,28 +34,12 @@ async function NewItemsSection() {
   }
 }
 
-async function SellersReadout() {
+async function TopSellersSection() {
   try {
     const sellers = await getTopSellers()
-    return (
-      <section className="page-wrap pb-16">
-        <h2 className="font-heading text-lg">Top sellers ({sellers.length})</h2>
-        <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-          {sellers.map((seller) => (
-            <li key={seller.id}>
-              {seller.authorName} · {formatEth(seller.price)}
-            </li>
-          ))}
-        </ul>
-      </section>
-    )
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "The NFT API could not be reached."
-    return (
-      <div className="page-wrap pb-16">
-        <p className="text-destructive">{message}</p>
-      </div>
-    )
+    return <TopSellers sellers={sellers} />
+  } catch {
+    return <TopSellers sellers={[]} />
   }
 }
 
@@ -68,8 +52,8 @@ export default function HomePage() {
       <Suspense fallback={<SectionSkeleton title="New Items" count={8} />}>
         <NewItemsSection />
       </Suspense>
-      <Suspense fallback={null}>
-        <SellersReadout />
+      <Suspense fallback={<SectionSkeleton title="Top Sellers" count={6} />}>
+        <TopSellersSection />
       </Suspense>
     </>
   )
