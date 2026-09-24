@@ -162,3 +162,44 @@
     transform: none;
   }
 }
+
+/* Hero orbs drift behind the headline. The card floats on its own layer so hover can still lift it. */
+@keyframes hero-orb-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2.5rem, -1.75rem, 0) scale(1.08);
+  }
+}
+
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+.hero-orb {
+  animation: hero-orb-drift 16s ease-in-out infinite;
+}
+
+.hero-orb-slow {
+  animation-duration: 22s;
+  animation-delay: -8s;
+}
+
+.hero-float {
+  animation: hero-float 6.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-orb,
+  .hero-float {
+    animation: none;
+  }
+}
