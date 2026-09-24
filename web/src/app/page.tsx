@@ -4,12 +4,14 @@
  * What: The marketplace landing route at `/`.
  * Why: Collections, new listings, and the seller ranking are separate
  *      requests. Each one should be able to finish on its own.
- * How: The page itself is synchronous. Each async child fetches inside
- *      Suspense, so one slow request does not blank the other section.
- *      A failed request renders an empty section instead of crashing the page.
+ * How: The page itself is synchronous. The hero is static CSS so it paints
+ *      immediately. Each async child fetches inside Suspense, so one slow
+ *      request does not blank the other section. A failed request renders
+ *      an empty section instead of crashing the page.
  */
 
 import { Suspense } from "react"
+import { AnimatedHero } from "@/components/home/animated-hero"
 import { HotCollections } from "@/components/home/hot-collections"
 import { NewItems } from "@/components/home/new-items"
 import { TopSellers } from "@/components/home/top-sellers"
@@ -46,15 +48,18 @@ async function TopSellersSection() {
 export default function HomePage() {
   return (
     <>
+      <AnimatedHero />
       <Suspense fallback={<SectionSkeleton title="Hot Collections" />}>
         <HotCollectionsSection />
       </Suspense>
       <Suspense fallback={<SectionSkeleton title="New Items" count={8} />}>
         <NewItemsSection />
       </Suspense>
-      <Suspense fallback={<SectionSkeleton title="Top Sellers" count={6} />}>
-        <TopSellersSection />
-      </Suspense>
+      <div id="top-sellers" className="scroll-mt-20">
+        <Suspense fallback={<SectionSkeleton title="Top Sellers" count={6} />}>
+          <TopSellersSection />
+        </Suspense>
+      </div>
     </>
   )
 }
