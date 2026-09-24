@@ -10,7 +10,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000. The home page has the Hot Collections carousel, the New Items grid, and the Top Sellers ranking. `/explore` sorts, searches, and tracks likes.
+Open http://localhost:3000. The home page has the carousel, new items, and seller ranking. `/explore` sorts and searches. `/author/[authorId]` is a creator profile.
 
 ## Branches
 
@@ -18,5 +18,6 @@ Open http://localhost:3000. The home page has the Hot Collections carousel, the 
 - `feature/hot-collections` — Hot Collections carousel
 - `feature/new-items-and-explore` — New Items grid and Explore catalog
 - `feature/top-sellers` — ranked seller list
+- `feature/author-profile` — dynamic creator page
 
 Pull request notes are in `docs/prs/`.
