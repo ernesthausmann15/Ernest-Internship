@@ -10,10 +10,11 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000. The home page lists hot collections, top sellers, and explore items returned by the API client in `src/lib/api.ts`.
+Open http://localhost:3000. Hot Collections is a draggable carousel. Seller and explore titles are still a plain list.
 
-## This branch
+## Branches
 
-`feature/api-services` adds the app shell and the typed client. Carousel, explore, author, and item screens are later branches.
+- `feature/api-services` — app shell and typed client
+- `feature/hot-collections` — Hot Collections carousel
 
-The pull request note is in `docs/prs/01-api-services-and-setup.md`.
+Pull request notes are in `docs/prs/`.
